@@ -61,17 +61,22 @@ function normalizarDireccion() {
       .catch(error => {
         console.error("Error al normalizar la dirección:", error);
       });
-  }
+}
   
-  function mostrarMapa(lat, lng) {
-    const mapa = L.map('mapa').setView([lat, lng], 15);
-  
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(mapa);
-  
-    L.marker([lat, lng]).addTo(mapa)
-      .bindPopup('Dirección: España 508, San Miguel')
-      .openPopup();
-  }
+function mostrarMapa(lat, lng) {
+  const mapa = L.map('mapa').setView([lat, lng], 15);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(mapa);
+
+  L.marker([lat, lng]).addTo(mapa)
+    .bindPopup('Dirección: España 508, San Miguel')
+    .openPopup();
+}
     
+function volverInicio() {
+  document.querySelectorAll('.pantalla').forEach(sec => sec.classList.add('oculto'));
+  document.getElementById('navbar').classList.add('oculto');
+  document.getElementById('inicio').classList.remove('oculto');
+}
