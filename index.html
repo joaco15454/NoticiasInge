@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Noticias Municipales</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+</head>
+<body>
+  <nav id="navbar" class="oculto">
+    <button onclick="mostrarSeccion('noticias')">Noticias</button>
+    <button onclick="mostrarSeccion('boletines')">Boletines</button>
+    <button onclick="mostrarSeccion('revista')">Revista Mensual</button>
+    <button onclick="volverInicio()">Cerrar sesión</button>
+  </nav>
+  
+  <!-- Pantalla de inicio -->
+  <section id="inicio" class="pantalla">
+    <h1>Bienvenido al Portal de Noticias</h1>
+    <button onclick="mostrarSeccion('login')">Iniciar sesión</button>
+    <button onclick="mostrarSeccion('registro')">Registrarse</button>
+    <button onclick="entrarComoInvitado()">Entrar como invitado</button>
+  </section>
+
+  <!-- Login -->
+  <section id="login" class="pantalla oculto">
+    <h2>Iniciar Sesión</h2>
+    <form onsubmit="login(event)">
+      <select required>
+        <option value="" disabled selected>Tipo de usuario</option>
+        <option value="vecino">Vecino</option>
+        <option value="admin">Administrador</option>
+      </select>
+      <input type="email" placeholder="Correo electrónico" required>
+      <input type="password" placeholder="Contraseña" required>
+      <button type="submit">Ingresar</button>
+    </form>
+    <button onclick="volverInicio()">Volver</button>
+  </section>
+
+  <!-- Registro -->
+<section id="registro" class="pantalla oculto">
+  <h2>Registro de Vecino</h2>
+  <form onsubmit="registrarse(event)">
+    <input type="text" placeholder="Nombre completo" required>
+    <input type="text" placeholder="DNI" required>
+    <input type="email" placeholder="Correo electrónico" required>
+    <input type="password" placeholder="Contraseña" required>
+    <label>
+      <input type="checkbox" required>
+      Acepto recibir novedades (newsletter)
+    </label>
+    <button type="submit">Registrarse</button>
+  </form>
+  <button onclick="volverInicio()">Volver</button>
+</section>
+ <!-- Noticias -->
+<section id="noticias" class="pantalla oculto">
+  <h2>Noticias Municipales</h2>
+
+  <!-- Noticia 1 -->
+  <article class="noticia">
+    <h3>Obra de pavimentación en San Miguel</h3>
+    <p>Se ha iniciado la obra de pavimentación en el barrio Calabaza</p>
+  
+    <!-- Dirección de la noticia -->
+    <div id="direccion">
+      <p><strong>Dirección: </strong>España 508, San Miguel, Buenos Aires</p>
+      <button onclick="normalizarDireccion()">Ver dirección en el mapa</button>
+    </div>
+  
+    <!-- Mapa -->
+    <div id="mapa" style="height: 300px; width: 100%;"></div>
+
+    <!-- Preguntas -->
+    <div class="preguntas">
+      <h4>Preguntas y respuestas</h4>
+
+      <!-- Pregunta 1 -->
+      <div class="pregunta">
+        <p><strong>Vecino 1:</strong> ¿Cuánto tiempo durará la obra?</p>
+        <p><strong>Admin:</strong> La obra se completará en aproximadamente 2 meses.</p>
+      </div>
+
+      <!-- Pregunta 2 -->
+      <div class="pregunta">
+        <p><strong>Vecino 2:</strong> ¿Qué calles estarán afectadas?</p>
+        <p><strong>Admin:</strong> Las calles principales del barrio Norte.</p>
+      </div>
+
+      <div id="form-pregunta" class="oculto">
+        <textarea placeholder="Escribí tu pregunta..." required></textarea>
+        <button onclick="enviarPregunta()">Enviar pregunta</button>
+      </div>
+    </div>
+  </article>
+
+</section>
+
+<!-- Boletines -->
+<section id="boletines" class="pantalla oculto">
+  <h2>Boletines Semanales</h2>
+  <p>Lista de boletines enviados, pendientes o con error.</p>
+  <ul>
+    <li>Boletín #12 - Semana 18 - Estado: Enviado</li>
+    <li>Boletín #13 - Semana 19 - Estado: Pendiente</li>
+  </ul>
+</section>
+
+<section id="revista" class="pantalla oculto">
+  <h2>Revista Mensual</h2>
+  <p>Envío mensual de noticias al sistema externo PrintAllTheThings.</p>
+  <p>Última exportación: 01/05/2025</p>
+</section>
+  <script src="script.js"></script>
+</body>
+</html>
