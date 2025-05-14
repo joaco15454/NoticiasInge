@@ -1,12 +1,21 @@
 let usuarioRegistrado = false;
+let tipoUsuario = null;
 
 function login(event) {
   event.preventDefault();
+  tipoUsuario = document.querySelector('#login select').value;
   alert("Sesión iniciada (simulado)");
   usuarioRegistrado = true;
   document.getElementById('navbar').classList.remove('oculto');
   mostrarSeccion('noticias');
   mostrarFormularioPreguntas();
+
+  const btnCrear = document.getElementById('btn-crear-noticia');
+  if (tipoUsuario === 'admin') {
+    btnCrear.style.display = 'inline-block';
+  } else {
+    btnCrear.style.display = 'none';
+  }
 }
 
 function registrarse(event) {

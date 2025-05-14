@@ -15,6 +15,7 @@
       <button onclick="mostrarSeccion('noticias')">Noticias</button>
       <button onclick="mostrarSeccion('boletines')">Boletines</button>
       <button onclick="mostrarSeccion('revista')">Revista Mensual</button>
+      <button id="btn-crear-noticia" onclick="mostrarSeccion('crear')">Crear Noticia</button>
       <button onclick="volverInicio()">Cerrar sesión</button>
     </nav>
     
@@ -58,6 +59,7 @@
       </form>
       <button onclick="volverInicio()">Volver</button>
     </section>
+
     <!-- Noticias -->
     <section id="noticias" class="pantalla oculto">
       <h2>Noticias Municipales</h2>
@@ -116,6 +118,18 @@
       <p>Envío mensual de noticias al sistema externo PrintAllTheThings.</p>
       <p>Última exportación: 01/05/2025</p>
     </section>
-      <script src="script.js"></script>
+
+    <!-- Crear Noticia -->
+    <section id="crear" class="pantalla oculto">
+      <h2>Crear Noticia</h2>
+      <form onsubmit="crearNoticia(event)">
+        <input type="text" placeholder="Título de la noticia" required>
+        <textarea placeholder="Descripción de la noticia" required></textarea>
+        <input type="text" placeholder="Dirección" required>
+        <button type="submit">Crear Noticia</button>
+      </form>
+      <button onclick="volverInicio()">Volver</button>
+    <script src="script.js"></script>
+    
   </body>
 </html>

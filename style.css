@@ -126,4 +126,6 @@ body {
  #direccion button:hover {
     background-color: #005fa3;
   }
-  
+  #btn-crear-noticia {
+  display: none;
+  }
