@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Noticia con Mapa</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f2f2f2;
+        padding: 2rem;
+      }
+      .noticia {
+        background: white;
+        max-width: 800px;
+        margin: auto;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .mapa {
+        height: 300px;
+        margin-top: 1rem;
+      }
+      button {
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        background-color: #0074d9;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #005fa3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="noticia">
+      <h2>Inicia la repavimentación de la calle Las Heras</h2>
+      <p>
+        El municipio ha comenzado con los trabajos de repavimentación de la
+        calle Las Heras, mejorando la transitabilidad y seguridad vial del
+        barrio.
+      </p>
+      <p>
+        <strong>Dirección:</strong> Las Heras 1234, San Miguel, Buenos Aires
+      </p>
+      <button onclick="normalizarYMostrarMapa()">
+        Ver ubicación en el mapa
+      </button>
+      <div id="mapa" class="mapa"></div>
+    </div>
+
+    <script>
+      function normalizarYMostrarMapa() {
+        const direccion = "Las Heras 1234, San Miguel";
+
+        const url = `https://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${encodeURIComponent(
+          direccion
+        )}&geocodificar=true`;
+
+        fetch(url)
+          .then((res) => res.json())
+          .then((data) => {
+            if (
+              data.direccionesNormalizadas &&
+              data.direccionesNormalizadas.length > 0
+            ) {
+              const resultado = data.direccionesNormalizadas[0];
+              const lat = resultado.coordenadas.y;
+              const lng = resultado.coordenadas.x;
+              mostrarMapa(lat, lng);
+            } else {
+              alert("No se pudo normalizar la dirección.");
+            }
+          })
+          .catch((err) => {
+            console.error("Error en la normalización:", err);
+          });
+      }
+
+      function mostrarMapa(lat, lng) {
+        const mapaDiv = document.getElementById("mapa");
+        mapaDiv.innerHTML = ""; // Reinicia el div
+        const mapa = L.map("mapa").setView([lat, lng], 16);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "&copy; OpenStreetMap contributors",
+        }).addTo(mapa);
+
+        L.marker([lat, lng])
+          .addTo(mapa)
+          .bindPopup("Ubicación de la obra")
+          .openPopup();
+      }
+    </script>
+  </body>
+</html>
