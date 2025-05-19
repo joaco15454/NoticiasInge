@@ -1,0 +1,23 @@
+[
+  {
+    "titulo": "Inicia la repavimentación de la calle Las Heras",
+    "descripcion": "El municipio ha comenzado con los trabajos de repavimentación de la calle Las Heras, mejorando la transitabilidad y seguridad vial del barrio.",
+    "direccion": "Las Heras 1234, San Miguel",
+    "lat": -34.603722,
+    "lng": -58.381592
+  },
+  {
+    "titulo": "Nueva plaza en el barrio Calabaza",
+    "descripcion": "Se inaugurará una plaza con juegos inclusivos y áreas verdes.",
+    "direccion": null,
+    "lat": null,
+    "lng": null
+  },
+  {
+    "titulo": "Ampliación del Hospital Central",
+    "descripcion": "El hospital sumará 30 camas y un nuevo centro de diagnóstico.",
+    "direccion": "Av. Rivadavia 345, Buenos Aires",
+    "lat": -34.610438,
+    "lng": -58.388574
+  }
+]
