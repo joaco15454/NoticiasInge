@@ -12,15 +12,16 @@ async function cargarNoticias() {
       const response = await fetch("noticias.json");
       noticias = await response.json();
 
-      // Agregamos campo preguntas a cada noticia para no romper el código actual
+      // Mapeamos para agregar id y preguntas si no existen
       noticias = noticias.map((n, i) => ({
         id: i + 1,
         titulo: n.titulo,
         descripcion: n.descripcion,
         direccion: n.direccion || "Dirección no disponible",
-        lat: n.lat,
-        lng: n.lng,
-        preguntas: [], // Inicializamos vacío para preguntas
+        lat: n.lat || null,
+        lng: n.lng || null,
+        tipo: n.tipo || "", // <-- NUEVO campo
+        preguntas: n.preguntas || [],
       }));
     } catch (error) {
       alert("Error al cargar las noticias");
@@ -28,20 +29,33 @@ async function cargarNoticias() {
     }
   }
 
-  noticias.forEach((noticia) => {
+  mostrarNoticias(noticias);
+}
+
+function mostrarNoticias(lista) {
+  const contenedor = document.getElementById("noticias-container");
+  contenedor.innerHTML = "";
+
+  if (lista.length === 0) {
+    contenedor.innerHTML = "<p>No se encontraron noticias.</p>";
+    return;
+  }
+
+  lista.forEach((noticia) => {
     const article = document.createElement("article");
     article.classList.add("noticia");
 
     article.innerHTML = `
       <h3>${noticia.titulo}</h3>
+      <p><em>Tipo: ${noticia.tipo || "No especificado"}</em></p>
       <p>${noticia.descripcion}</p>
       <div id="direccion-${noticia.id}">
         <p><strong>Dirección: </strong>${noticia.direccion}</p>
         <button onclick="mostrarMapa(${noticia.lat}, ${noticia.lng}, '${
       noticia.direccion
-    }', ${noticia.id})" ${
-      noticia.lat && noticia.lng ? "" : "disabled"
-    }>Ver dirección en el mapa</button>
+    }', ${noticia.id})" ${noticia.lat && noticia.lng ? "" : "disabled"}>
+          Ver dirección en el mapa
+        </button>
       </div>
       <div id="mapa-${
         noticia.id
@@ -49,15 +63,17 @@ async function cargarNoticias() {
       <div class="preguntas">
         <h4>Preguntas y respuestas</h4>
         ${
-          noticia.preguntas
-            .map(
-              (p) => `
+          noticia.preguntas.length > 0
+            ? noticia.preguntas
+                .map(
+                  (p) => `
           <div class="pregunta">
             <p><strong>${p.autor}:</strong> ${p.texto}</p>
             <p><strong>Admin:</strong> ${p.respuesta}</p>
           </div>`
-            )
-            .join("") || "<p>No hay preguntas todavía.</p>"
+                )
+                .join("")
+            : "<p>No hay preguntas todavía.</p>"
         }
       </div>
       <div id="form-pregunta-${noticia.id}" class="${
@@ -117,7 +133,7 @@ function enviarPregunta(idNoticia) {
 
   textarea.value = "";
 
-  cargarNoticias();
+  filtrarNoticias(); // Refrescar lista filtrada y mostrada
 }
 
 function mostrarSeccion(seccionId) {
@@ -128,7 +144,7 @@ function mostrarSeccion(seccionId) {
   document.getElementById(seccionId).classList.remove("oculto");
 
   if (seccionId === "noticias") {
-    cargarNoticias();
+    filtrarNoticias(); // Mostrar noticias filtradas (o todas si no hay filtro)
   }
 }
 
@@ -155,6 +171,12 @@ function login(event) {
   mostrarSeccion("noticias");
 }
 
+function registrarse(event) {
+  event.preventDefault();
+  alert("Registro exitoso. Ahora puede iniciar sesión.");
+  mostrarSeccion("login");
+}
+
 function volverInicio() {
   usuarioActual = null;
   document.getElementById("navbar").classList.add("oculto");
@@ -174,28 +196,109 @@ function crearNoticia(event) {
     .getElementById("descripcionNoticia")
     .value.trim();
   const direccion = document.getElementById("direccionNoticia").value.trim();
+  const tipo = document.getElementById("tipoNoticia").value;
 
-  if (!titulo || !descripcion || !direccion) {
-    alert("Completa todos los campos.");
+  if (!titulo || !descripcion || !direccion || !tipo) {
+    alert("Complete todos los campos y seleccione un tipo.");
     return;
   }
 
-  noticias.push({
+  // Simulación de geocodificación: en la práctica se usaría API real
+  const lat = -34.6037 + Math.random() * 0.01; // Algo cerca de Buenos Aires
+  const lng = -58.3816 + Math.random() * 0.01;
+
+  const nuevaNoticia = {
     id: noticias.length + 1,
     titulo,
     descripcion,
     direccion,
-    lat: null,
-    lng: null,
+    lat,
+    lng,
+    tipo,
     preguntas: [],
+  };
+
+  noticias.push(nuevaNoticia);
+
+  alert("Noticia creada correctamente.");
+
+  // Limpiar formulario
+  event.target.reset();
+  document.getElementById("previsualizacion").style.display = "none";
+
+  mostrarSeccion("noticias");
+  filtrarNoticias();
+}
+
+function previsualizarNoticia() {
+  const titulo = document.getElementById("tituloNoticia").value.trim();
+  const descripcion = document
+    .getElementById("descripcionNoticia")
+    .value.trim();
+  const direccion = document.getElementById("direccionNoticia").value.trim();
+  const tipo = document.getElementById("tipoNoticia").value;
+
+  if (!titulo || !descripcion || !direccion || !tipo) {
+    alert("Complete todos los campos para previsualizar.");
+    return;
+  }
+
+  const div = document.getElementById("previsualizacion");
+  div.style.display = "block";
+  div.innerHTML = `
+    <h3>${titulo}</h3>
+    <p><em>Tipo: ${tipo}</em></p>
+    <p>${descripcion}</p>
+    <p><strong>Dirección: </strong>${direccion}</p>
+  `;
+}
+
+// Cambia el placeholder del input de búsqueda según el combo
+function actualizarPlaceholder() {
+  const select = document.getElementById("selectBuscarPor");
+  const input = document.getElementById("inputBuscar");
+
+  if (select.value === "titulo") {
+    input.placeholder = "Buscar por título...";
+  } else {
+    input.placeholder = "Buscar por contenido...";
+  }
+
+  filtrarNoticias();
+}
+
+// Función para filtrar noticias según búsquedas y tipo
+function filtrarNoticias() {
+  const criterio = document.getElementById("selectBuscarPor").value;
+  const textoBuscar = document
+    .getElementById("inputBuscar")
+    .value.toLowerCase()
+    .trim();
+  const tipoFiltro = document.getElementById("selectTipo").value;
+
+  let filtradas = noticias.filter((noticia) => {
+    // Filtrar por tipo
+    if (tipoFiltro && noticia.tipo !== tipoFiltro) {
+      return false;
+    }
+
+    // Filtrar por texto según criterio
+    if (textoBuscar === "") return true;
+
+    if (criterio === "titulo") {
+      return noticia.titulo.toLowerCase().includes(textoBuscar);
+    } else if (criterio === "descripcion") {
+      return noticia.descripcion.toLowerCase().includes(textoBuscar);
+    }
+
+    return true;
   });
 
-  alert("Noticia creada con éxito.");
-  mostrarSeccion("noticias");
-  cargarNoticias();
+  mostrarNoticias(filtradas);
 }
 
-function registrarse(event) {
-  event.preventDefault();
-  alert("Funcionalidad de registro no implementada en este ejemplo.");
-}
+// Inicializar
+window.onload = () => {
+  mostrarSeccion("inicio");
+  cargarNoticias();
+};

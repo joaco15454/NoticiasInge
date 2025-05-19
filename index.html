@@ -30,8 +30,41 @@
     <!-- Noticias -->
     <section id="noticias" class="pantalla oculto">
       <h2>Noticias Municipales</h2>
+
+      <!-- Buscador y filtro -->
+      <div id="filtros-noticias" style="margin-bottom: 20px">
+        <label>
+          Buscar por:
+          <select id="selectBuscarPor" onchange="actualizarPlaceholder()">
+            <option value="titulo">Título</option>
+            <option value="descripcion">Contenido</option>
+          </select>
+        </label>
+        <input
+          type="text"
+          id="inputBuscar"
+          placeholder="Buscar por título..."
+          oninput="filtrarNoticias()"
+          style="margin-left: 10px"
+        />
+
+        <label style="margin-left: 20px">
+          Filtrar por tipo:
+          <select id="selectTipo" onchange="filtrarNoticias()">
+            <option value="">-- Todos --</option>
+            <option value="obras publicas">Obras Públicas</option>
+            <option value="campañas municipales">Campañas Municipales</option>
+            <option value="cultura">Cultura</option>
+            <option value="festivales">Festivales</option>
+            <option value="acontecimientos vecinales">
+              Acontecimientos Vecinales
+            </option>
+          </select>
+        </label>
+      </div>
+
       <div id="noticias-container">
-        <!-- Aquí se inyectan las noticias dinámicamente -->
+        <!-- Noticias se cargan aquí -->
       </div>
     </section>
 
@@ -88,7 +121,7 @@
     <!-- Crear Noticia -->
     <section id="crear" class="pantalla oculto">
       <h2>Crear Noticia</h2>
-      <form onsubmit="crearNoticia(event)">
+      <form id="formCrearNoticia" onsubmit="crearNoticia(event)">
         <input
           type="text"
           id="tituloNoticia"
@@ -106,8 +139,38 @@
           placeholder="Dirección"
           required
         />
+        <label for="tipoNoticia">Tipo de noticia:</label>
+        <select id="tipoNoticia" required>
+          <option value="" disabled selected>Seleccione tipo</option>
+          <option value="obras publicas">Obras Públicas</option>
+          <option value="campañas municipales">Campañas Municipales</option>
+          <option value="cultura">Cultura</option>
+          <option value="festivales">Festivales</option>
+          <option value="acontecimientos vecinales">
+            Acontecimientos Vecinales
+          </option>
+        </select>
+        <br /><br />
         <button type="submit">Crear Noticia</button>
+        <button
+          type="button"
+          id="btn-previsualizar"
+          onclick="previsualizarNoticia()"
+        >
+          Previsualizar
+        </button>
       </form>
+
+      <div
+        id="previsualizacion"
+        style="
+          border: 1px solid #ccc;
+          padding: 10px;
+          margin-top: 10px;
+          display: none;
+        "
+      ></div>
+
       <button onclick="volverInicio()">Volver</button>
     </section>
 
