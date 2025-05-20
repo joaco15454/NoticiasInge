@@ -16,6 +16,8 @@ function login(event) {
   } else {
     btnCrear.style.display = 'none';
   }
+
+  mostrarSeccion("noticias");
 }
 
 function registrarse(event) {
@@ -44,9 +46,7 @@ function mostrarFormularioPreguntas() {
   }
 }
 
-
-
-/**function enviarPregunta() {
+function enviarPregunta() {
   alert("Pregunta enviada (simulada).");
 }
 
@@ -84,10 +84,8 @@ function mostrarMapa(lat, lng) {
   L.marker([lat, lng]).addTo(mapa)
     .bindPopup('Dirección: España 508, San Miguel')
     .openPopup();
-}**/
- 
-
-
+}
+    
 function volverInicio() {
   document.querySelectorAll('.pantalla').forEach(sec => sec.classList.add('oculto'));
   document.getElementById('navbar').classList.add('oculto');

@@ -1,0 +1,24 @@
+{
+  "usuarios": [
+    {
+      "email": "admin@municipio.com",
+      "password": "admin123",
+      "tipo": "admin"
+    },
+    {
+      "email": "admin2@municipio.com",
+      "password": "admin456",
+      "tipo": "admin"
+    },
+    {
+      "email": "vecinoregistrado1@mail.com",
+      "password": "vecino123",
+      "tipo": "vecinoregistrado"
+    },
+    {
+      "email": "vecinoregistrado2@mail.com",
+      "password": "vecino456",
+      "tipo": "vecinoregistrado"
+    }
+  ]
+}

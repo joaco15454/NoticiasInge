@@ -2,23 +2,23 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Noticias Municipales</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
   </head>
   <body>
     <nav id="navbar" class="oculto">
       <button onclick="mostrarSeccion('noticias')">Noticias</button>
       <button onclick="mostrarSeccion('boletines')">Boletines</button>
       <button onclick="mostrarSeccion('revista')">Revista Mensual</button>
-      <button id="btn-crear-noticia" onclick="mostrarSeccion('crear')">Crear Noticia</button>
+      <button id="btn-crear-noticia" onclick="mostrarSeccion('crear')">
+        Crear Noticia
+      </button>
       <button onclick="volverInicio()">Cerrar sesión</button>
     </nav>
-    
+
     <!-- Pantalla de inicio -->
     <section id="inicio" class="pantalla">
       <h1>Bienvenido al Portal de Noticias</h1>
@@ -30,60 +30,67 @@
 
     </section>
 
-    <!-- Login -->
-    <section id="login" class="pantalla oculto">
-      <h2>Iniciar Sesión</h2>
-      <form onsubmit="login(event)">
-        <select required>
-          <option value="" disabled selected>Tipo de usuario</option>
-          <option value="vecino">Vecino</option>
-          <option value="admin">Administrador</option>
-        </select>
-        <input type="email" placeholder="Correo electrónico" required>
-        <input type="password" placeholder="Contraseña" required>
-        <button type="submit">Ingresar</button>
-      </form>
-      <button onclick="volverInicio()">Volver</button>
-    </section>
-
-    <!-- Registro -->
-    <section id="registro" class="pantalla oculto">
-      <h2>Registro de Vecino</h2>
-      <form onsubmit="registrarse(event)">
-        <input type="text" placeholder="Nombre completo" required>
-        <input type="text" placeholder="DNI" required>
-        <input type="email" placeholder="Correo electrónico" required>
-        <input type="password" placeholder="Contraseña" required>
-        <label>
-          <input type="checkbox" required>
-          Acepto recibir novedades (newsletter)
-        </label>
-        <button type="submit">Registrarse</button>
-      </form>
-      <button onclick="volverInicio()">Volver</button>
-    </section>
-
     <!-- Noticias -->
     <section id="noticias" class="pantalla oculto">
       <h2>Noticias Municipales</h2>
 
-      <!-- Noticia 1 -->
-      <article class="noticia">
-        <h3>Obra de pavimentación en San Miguel</h3>
-        <p>Se ha iniciado la obra de pavimentación en el barrio Calabaza</p>
-      
-        <!-- Dirección de la noticia -->
-        <div id="direccion">
-          <p><strong>Dirección: </strong>España 508, San Miguel, Buenos Aires</p>
-          <button onclick="normalizarDireccion1()">Ver dirección en el mapa</button>
-        </div>
-      
-        <!-- Mapa -->
-        <div id="mapa" style="height: 300px; width: 100%;"></div>
+      <!-- Buscador y filtro -->
+      <div id="filtros-noticias" style="margin-bottom: 20px">
+        <label>
+          Buscar por:
+          <select id="selectBuscarPor" onchange="actualizarPlaceholder()">
+            <option value="titulo">Título</option>
+            <option value="descripcion">Contenido</option>
+          </select>
+        </label>
+        <input
+          type="text"
+          id="inputBuscar"
+          placeholder="Buscar por título..."
+          oninput="filtrarNoticias()"
+          style="margin-left: 10px"
+        />
 
-        <!-- Preguntas -->
-        <div class="preguntas">
-          <h4>Preguntas y respuestas</h4>
+        <label style="margin-left: 20px">
+          Filtrar por tipo:
+          <select id="selectTipo" onchange="filtrarNoticias()">
+            <option value="">-- Todos --</option>
+            <option value="obras publicas">Obras Públicas</option>
+            <option value="campañas municipales">Campañas Municipales</option>
+            <option value="cultura">Cultura</option>
+            <option value="festivales">Festivales</option>
+            <option value="acontecimientos vecinales">
+              Acontecimientos Vecinales
+            </option>
+          </select>
+        </label>
+        <button onclick="mostrarSeccion(registro)">Buscar</button>
+      </div>
+
+      <div id="noticias-container">
+        <!-- Noticias se cargan aquí -->
+        
+        <!-- Noticias -->
+        <section id="noticias" class="pantalla oculto">
+          <h2>Noticias Municipales</h2>
+
+          <!-- Noticia 1--> 
+          <article class="noticia">
+           <h3>Obra de pavimentación en San Miguel</h3>
+            <p>Se ha iniciado la obra de pavimentación en el barrio Calabaza</p>
+      
+          <!-- Dirección de la noticia -->
+          <div id="direccion">
+            <p><strong>Dirección: </strong>España 508, San Miguel, Buenos Aires</p>
+              <button onclick="normalizarDireccion1()">Ver dirección en el mapa</button>
+          </div>
+      
+          <!-- Mapa -->
+          <div id="mapa" style="height: 300px; width: 100%;"></div>
+
+          <!-- Preguntas -->
+          <div class="preguntas">
+            <h4>Preguntas y respuestas</h4>
 
           <!-- Pregunta 1 -->
           <div class="pregunta">
@@ -100,366 +107,54 @@
           <div id="form-pregunta" class="oculto">
             <textarea placeholder="Escribí tu pregunta..." required></textarea>
             <button onclick="enviarPregunta1()">Enviar pregunta</button>
+            </div>
           </div>
-        </div>
-      </article>
+          </article>
 
       <hr>
 
-      <!-- Noticia 2 -->
-      <article class="noticia">
-        <h3>Feria Cultural</h3>
-        <p>Empieza la Feria Cultural en la plaza San Miguel</p>
       
-        <!-- Dirección de la noticia -->
-        <div id="direccion">
-          <p><strong>Dirección: </strong>Avenida Presidente Juan Domingo Perón 1602, San Miguel, Buenos Aires</p>
-          <button onclick="normalizarDireccion2()">Ver dirección en el mapa</button>
-        </div>
-      
-        <!-- Mapa -->
-        <div id="mapa" style="height: 300px; width: 100%;"></div>
+  
+          </section>
 
-        <!-- Preguntas -->
-        <div class="preguntas">
-          <h4>Preguntas y respuestas</h4>
-
-          <!-- Pregunta 1 -->
-          <div class="pregunta">
-            <p><strong>Vecino 1:</strong> ¿Cuánto tiempo durará la obra?</p>
-            <p><strong>Admin:</strong> La obra se completará en aproximadamente 2 meses.</p>
-          </div>
-
-          <!-- Pregunta 2 -->
-          <div class="pregunta">
-            <p><strong>Vecino 2:</strong> ¿Qué calles estarán afectadas?</p>
-            <p><strong>Admin:</strong> Las calles principales del barrio Norte.</p>
-          </div>
-
-          <div id="form-pregunta" class="oculto">
-            <textarea placeholder="Escribí tu pregunta..." required></textarea>
-            <button onclick="enviarPregunta2()">Enviar pregunta</button>
-          </div>
-        </div>
-      </article>
-
-      <hr>
-
-      <!-- Noticia 3 -->
-      <article class="noticia">
-        <h3></h3>
-        <p>Empieza la Feria Cultural en la plaza San Miguel</p>
-      
-        <!-- Dirección de la noticia -->
-        <div id="direccion">
-          <p><strong>Dirección: </strong>Pringles 1102, San Miguel, Buenos Aires</p>
-          <button onclick="normalizarDireccion3()">Ver dirección en el mapa</button>
-        </div>
-      
-        <!-- Mapa -->
-        <div id="mapa" style="height: 300px; width: 100%;"></div>
-
-        <!-- Preguntas -->
-        <div class="preguntas">
-          <h4>Preguntas y respuestas</h4>
-
-          <!-- Pregunta 1 -->
-          <div class="pregunta">
-            <p><strong>Vecino 1:</strong> ¿Cuánto tiempo durará la obra?</p>
-            <p><strong>Admin:</strong> La obra se completará en aproximadamente 2 meses.</p>
-          </div>
-
-          <!-- Pregunta 2 -->
-          <div class="pregunta">
-            <p><strong>Vecino 2:</strong> ¿Qué calles estarán afectadas?</p>
-            <p><strong>Admin:</strong> Las calles principales del barrio Norte.</p>
-          </div>
-
-          <div id="form-pregunta" class="oculto">
-            <textarea placeholder="Escribí tu pregunta..." required></textarea>
-            <button onclick="enviarPregunta3()">Enviar pregunta</button>
-          </div>
-        </div>
-      </article>
-
-      <hr>
-
-      <!-- Noticia 4 -->
-      <article class="noticia">
-        <h3>Feria Cultural</h3>
-        <p>Empieza la Feria Cultural en la plaza San Miguel</p>
-      
-        <!-- Dirección de la noticia -->
-        <div id="direccion">
-          <p><strong>Dirección: </strong>Italia 900, San Miguel, Buenos Aires</p>
-          <button onclick="normalizarDireccion4()">Ver dirección en el mapa</button>
-        </div>
-      
-        <!-- Mapa -->
-        <div id="mapa" style="height: 300px; width: 100%;"></div>
-
-        <!-- Preguntas -->
-        <div class="preguntas">
-          <h4>Preguntas y respuestas</h4>
-
-          <!-- Pregunta 1 -->
-          <div class="pregunta">
-            <p><strong>Vecino 1:</strong> ¿Cuánto tiempo durará la obra?</p>
-            <p><strong>Admin:</strong> La obra se completará en aproximadamente 2 meses.</p>
-          </div>
-
-          <!-- Pregunta 2 -->
-          <div class="pregunta">
-            <p><strong>Vecino 2:</strong> ¿Qué calles estarán afectadas?</p>
-            <p><strong>Admin:</strong> Las calles principales del barrio Norte.</p>
-          </div>
-
-          <div id="form-pregunta" class="oculto">
-            <textarea placeholder="Escribí tu pregunta..." required></textarea>
-            <button onclick="enviarPregunta4()">Enviar pregunta</button>
-          </div>
-        </div>
-      </article>
-
-      <hr>
-
-      <!-- Noticia 5 -->
-      <article class="noticia">
-        <h3>Feria Cultural</h3>
-        <p>Empieza la Feria Cultural en la plaza San Miguel</p>
-      
-        <!-- Dirección de la noticia -->
-        <div id="direccion">
-          <p><strong>Dirección: </strong>Pardo 1500, San Miguel, Buenos Aires</p>
-          <button onclick="normalizarDireccion5()">Ver dirección en el mapa</button>
-        </div>
-      
-        <!-- Mapa -->
-        <div id="mapa" style="height: 300px; width: 100%;"></div>
-
-        <!-- Preguntas -->
-        <div class="preguntas">
-          <h4>Preguntas y respuestas</h4>
-
-          <!-- Pregunta 1 -->
-          <div class="pregunta">
-            <p><strong>Vecino 1:</strong> ¿Cuánto tiempo durará la obra?</p>
-            <p><strong>Admin:</strong> La obra se completará en aproximadamente 2 meses.</p>
-          </div>
-
-          <!-- Pregunta 2 -->
-          <div class="pregunta">
-            <p><strong>Vecino 2:</strong> ¿Qué calles estarán afectadas?</p>
-            <p><strong>Admin:</strong> Las calles principales del barrio Norte.</p>
-          </div>
-
-          <div id="form-pregunta" class="oculto">
-            <textarea placeholder="Escribí tu pregunta..." required></textarea>
-            <button onclick="enviarPregunta5()">Enviar pregunta</button>
-          </div>
-        </div>
-      </article>
-
-      <hr>
-
-      <!-- Noticia 6 -->
-      <article class="noticia">
-        <h3>Feria Cultural</h3>
-        <p>Empieza la Feria Cultural en la plaza San Miguel</p>
-      
-        <!-- Dirección de la noticia -->
-        <div id="direccion">
-          <p><strong>Dirección: </strong>Zuviría 2100, San Miguel, Buenos Aires</p>
-          <button onclick="normalizarDireccion6()">Ver dirección en el mapa</button>
-        </div>
-      
-        <!-- Mapa -->
-        <div id="mapa" style="height: 300px; width: 100%;"></div>
-
-        <!-- Preguntas -->
-        <div class="preguntas">
-          <h4>Preguntas y respuestas</h4>
-
-          <!-- Pregunta 1 -->
-          <div class="pregunta">
-            <p><strong>Vecino 1:</strong> ¿Cuánto tiempo durará la obra?</p>
-            <p><strong>Admin:</strong> La obra se completará en aproximadamente 2 meses.</p>
-          </div>
-
-          <!-- Pregunta 2 -->
-          <div class="pregunta">
-            <p><strong>Vecino 2:</strong> ¿Qué calles estarán afectadas?</p>
-            <p><strong>Admin:</strong> Las calles principales del barrio Norte.</p>
-          </div>
-
-          <div id="form-pregunta" class="oculto">
-            <textarea placeholder="Escribí tu pregunta..." required></textarea>
-            <button onclick="enviarPregunta6()">Enviar pregunta</button>
-          </div>
-        </div>
-      </article>
-
-      <hr>
-
-      <!-- Noticia 7 -->
-      <article class="noticia">
-        <h3>Feria Cultural</h3>
-        <p>Empieza la Feria Cultural en la plaza San Miguel</p>
-      
-        <!-- Dirección de la noticia -->
-        <div id="direccion">
-          <p><strong>Dirección: </strong>Avenida Doctor Ricardo Balbín 2300, San Miguel, Buenos Aires</p>
-          <button onclick="normalizarDireccion7()">Ver dirección en el mapa</button>
-        </div>
-      
-        <!-- Mapa -->
-        <div id="mapa" style="height: 300px; width: 100%;"></div>
-
-        <!-- Preguntas -->
-        <div class="preguntas">
-          <h4>Preguntas y respuestas</h4>
-
-          <!-- Pregunta 1 -->
-          <div class="pregunta">
-            <p><strong>Vecino 1:</strong> ¿Cuánto tiempo durará la obra?</p>
-            <p><strong>Admin:</strong> La obra se completará en aproximadamente 2 meses.</p>
-          </div>
-
-          <!-- Pregunta 2 -->
-          <div class="pregunta">
-            <p><strong>Vecino 2:</strong> ¿Qué calles estarán afectadas?</p>
-            <p><strong>Admin:</strong> Las calles principales del barrio Norte.</p>
-          </div>
-
-          <div id="form-pregunta" class="oculto">
-            <textarea placeholder="Escribí tu pregunta..." required></textarea>
-            <button onclick="enviarPregunta7()">Enviar pregunta</button>
-          </div>
-        </div>
-      </article>
-
-      <hr>
-
-      <!-- Noticia 8 -->
-      <article class="noticia">
-        <h3>Feria Cultural</h3>
-        <p>Empieza la Feria Cultural en la plaza San Miguel</p>
-      
-        <!-- Dirección de la noticia -->
-        <div id="direccion">
-          <p><strong>Dirección: </strong>Blasco Ibañes 2700, San Miguel, Buenos Aires</p>
-          <button onclick="normalizarDireccion8()">Ver dirección en el mapa</button>
-        </div>
-      
-        <!-- Mapa -->
-        <div id="mapa" style="height: 300px; width: 100%;"></div>
-
-        <!-- Preguntas -->
-        <div class="preguntas">
-          <h4>Preguntas y respuestas</h4>
-
-          <!-- Pregunta 1 -->
-          <div class="pregunta">
-            <p><strong>Vecino 1:</strong> ¿Cuánto tiempo durará la obra?</p>
-            <p><strong>Admin:</strong> La obra se completará en aproximadamente 2 meses.</p>
-          </div>
-
-          <!-- Pregunta 2 -->
-          <div class="pregunta">
-            <p><strong>Vecino 2:</strong> ¿Qué calles estarán afectadas?</p>
-            <p><strong>Admin:</strong> Las calles principales del barrio Norte.</p>
-          </div>
-
-          <div id="form-pregunta" class="oculto">
-            <textarea placeholder="Escribí tu pregunta..." required></textarea>
-            <button onclick="enviarPregunta8()">Enviar pregunta</button>
-          </div>
-        </div>
-      </article>
-
-      <hr>
-
-      <!-- Noticia 9 -->
-      <article class="noticia">
-        <h3>Feria Cultural</h3>
-        <p>Empieza la Feria Cultural en la plaza San Miguel</p>
-      
-        <!-- Dirección de la noticia -->
-        <div id="direccion">
-          <p><strong>Dirección: </strong>Avenida Gaspar Campos 4700, San Miguel, Buenos Aires</p>
-          <button onclick="normalizarDireccion9()">Ver dirección en el mapa</button>
-        </div>
-      
-        <!-- Mapa -->
-        <div id="mapa" style="height: 300px; width: 100%;"></div>
-
-        <!-- Preguntas -->
-        <div class="preguntas">
-          <h4>Preguntas y respuestas</h4>
-
-          <!-- Pregunta 1 -->
-          <div class="pregunta">
-            <p><strong>Vecino 1:</strong> ¿Cuánto tiempo durará la obra?</p>
-            <p><strong>Admin:</strong> La obra se completará en aproximadamente 2 meses.</p>
-          </div>
-
-          <!-- Pregunta 2 -->
-          <div class="pregunta">
-            <p><strong>Vecino 2:</strong> ¿Qué calles estarán afectadas?</p>
-            <p><strong>Admin:</strong> Las calles principales del barrio Norte.</p>
-          </div>
-
-          <div id="form-pregunta" class="oculto">
-            <textarea placeholder="Escribí tu pregunta..." required></textarea>
-            <button onclick="enviarPregunta9()">Enviar pregunta</button>
-          </div>
-        </div>
-      </article>
-
-      <hr>
-
-      <!-- Noticia 10 -->
-      <article class="noticia">
-        <h3>Feria Cultural</h3>
-        <p>Empieza la Feria Cultural en la plaza San Miguel</p>
-      
-        <!-- Dirección de la noticia -->
-        <div id="direccion">
-          <p><strong>Dirección: </strong>Maestro Eduardo Ferreyra 2200, San Miguel, Buenos Aires</p>
-          <button onclick="normalizarDireccion10()">Ver dirección en el mapa</button>
-        </div>
-      
-        <!-- Mapa -->
-        <div id="mapa" style="height: 300px; width: 100%;"></div>
-
-        <!-- Preguntas -->
-        <div class="preguntas">
-          <h4>Preguntas y respuestas</h4>
-
-          <!-- Pregunta 1 -->
-          <div class="pregunta">
-            <p><strong>Vecino 1:</strong> ¿Cuánto tiempo durará la obra?</p>
-            <p><strong>Admin:</strong> La obra se completará en aproximadamente 2 meses.</p>
-          </div>
-
-          <!-- Pregunta 2 -->
-          <div class="pregunta">
-            <p><strong>Vecino 2:</strong> ¿Qué calles estarán afectadas?</p>
-            <p><strong>Admin:</strong> Las calles principales del barrio Norte.</p>
-          </div>
-
-          <div id="form-pregunta" class="oculto">
-            <textarea placeholder="Escribí tu pregunta..." required></textarea>
-            <button onclick="enviarPregunta10()">Enviar pregunta</button>
-          </div>
-        </div>
-      </article>
-
-
-
-
-
+      </div>
     </section>
+
+    <!-- Login -->
+    <section id="login" class="pantalla oculto">
+      <h2>Iniciar Sesión</h2>
+      <form onsubmit="login(event)">
+        <select required>
+          <option value="" disabled selected>Tipo de usuario</option>
+          <option value="vecino">Vecino</option>
+          <option value="admin">Administrador</option>
+        </select>
+        <input type="email" placeholder="Correo electrónico" required />
+        <input type="password" placeholder="Contraseña" required />
+        <button type="submit">Ingresar</button>
+      </form>
+      <button onclick="volverInicio()">Volver</button>
+    </section>
+
+    <!-- Registro -->
+    <section id="registro" class="pantalla oculto">
+      <h2>Registro de Vecino</h2>
+      <form onsubmit="registrarse(event)">
+        <input type="text" placeholder="Nombre completo" required />
+        <input type="text" placeholder="DNI" required />
+        <input type="email" placeholder="Correo electrónico" required />
+        <input type="password" placeholder="Contraseña" required />
+        <label>
+          <input type="checkbox" required />
+          Acepto recibir novedades (newsletter)
+        </label>
+        <button type="submit">Registrarse</button>
+      </form>
+      <button onclick="volverInicio()">Volver</button>
+    </section>
+
+    <!-- Noticias -->
+    
 
     <!-- Boletines -->
     <section id="boletines" class="pantalla oculto">
@@ -471,6 +166,7 @@
       </ul>
     </section>
 
+    <!-- Revista -->
     <section id="revista" class="pantalla oculto">
       <h2>Revista Mensual</h2>
       <p>Envío mensual de noticias al sistema externo PrintAllTheThings.</p>
@@ -480,13 +176,59 @@
     <!-- Crear Noticia -->
     <section id="crear" class="pantalla oculto">
       <h2>Crear Noticia</h2>
-      <form onsubmit="crearNoticia(event)">
-        <input type="text" placeholder="Título de la noticia" required>
-        <textarea placeholder="Descripción de la noticia" required></textarea>
-        <input type="text" placeholder="Dirección" required>
+      <form id="formCrearNoticia" onsubmit="crearNoticia(event)">
+        <input
+          type="text"
+          id="tituloNoticia"
+          placeholder="Título de la noticia"
+          required
+        />
+        <textarea
+          id="descripcionNoticia"
+          placeholder="Descripción de la noticia"
+          required
+        ></textarea>
+        <input
+          type="text"
+          id="direccionNoticia"
+          placeholder="Dirección"
+          required
+        />
+        <label for="tipoNoticia">Tipo de noticia:</label>
+        <select id="tipoNoticia" required>
+          <option value="" disabled selected>Seleccione tipo</option>
+          <option value="obras publicas">Obras Públicas</option>
+          <option value="campañas municipales">Campañas Municipales</option>
+          <option value="cultura">Cultura</option>
+          <option value="festivales">Festivales</option>
+          <option value="acontecimientos vecinales">
+            Acontecimientos Vecinales
+          </option>
+        </select>
+        <br /><br />
         <button type="submit">Crear Noticia</button>
+        <button
+          type="button"
+          id="btn-previsualizar"
+          onclick="previsualizarNoticia()"
+        >
+          Previsualizar
+        </button>
       </form>
+
+      <div
+        id="previsualizacion"
+        style="
+          border: 1px solid #ccc;
+          padding: 10px;
+          margin-top: 10px;
+          display: none;
+        "
+      ></div>
+
       <button onclick="volverInicio()">Volver</button>
+    </section>
+
     <script src="script.js"></script>
     <script src="scriptNoticias.js"></script>
     
