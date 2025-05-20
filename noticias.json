@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "titulo": "Inicia la repavimentación de la calle Las Heras",
     "descripcion": "El municipio ha comenzado con los trabajos de repavimentación de la calle Las Heras, mejorando la transitabilidad y seguridad vial del barrio.",
     "tipo": "obras publicas",
@@ -8,6 +9,7 @@
     "lng": -58.381592
   },
   {
+    "id": 2,
     "titulo": "Nueva plaza en el barrio Calabaza",
     "descripcion": "Se inaugurará una plaza con juegos inclusivos y áreas verdes.",
     "tipo": "obras publicas",
@@ -16,6 +18,7 @@
     "lng": null
   },
   {
+    "id": 3,
     "titulo": "Ampliación del Hospital Central",
     "descripcion": "El hospital sumará 30 camas y un nuevo centro de diagnóstico.",
     "tipo": "obras publicas",
@@ -24,6 +27,7 @@
     "lng": -58.388574
   },
   {
+    "id": 4,
     "titulo": "Campaña de vacunación en el barrio Calabaza",
     "descripcion": "El municipio realizará una campaña de vacunación gratuita para los vecinos de San Miguel.",
     "tipo": "campañas municipales",
@@ -32,6 +36,7 @@
     "lng": -58.388574
   },
   {
+    "id": 5,
     "titulo": "Festival de folclore en barrio Mitre",
     "descripcion": "Se realizará un festival de folclore con música en vivo por el 50º aniversario del barrio Mitre.",
     "tipo": "festivales",

@@ -1,419 +1,82 @@
-/*Primera Noticia*/ 
-function enviarPregunta1() {
-  alert("Pregunta enviada (simulada).");
+function normalizarDireccion(direccion, id) {
+  const direccionCodificada = encodeURIComponent(direccion);
+
+  const url = `http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${direccionCodificada}&geocodificar=true`;
+
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
+        const resultado = data.direccionesNormalizadas[0];
+        const lat = resultado.coordenadas.y;
+        const lng = resultado.coordenadas.x;
+        mostrarMapa(direccion, id, lat, lng);
+      } else {
+        alert("No se encontraron resultados para la dirección.");
+      }
+    })
+    .catch(error => {
+      console.error("Error al normalizar la dirección:", error);
+    });
 }
 
-function normalizarDireccion1() {
-    const direccion = 'España 508, San Miguel'; 
-  
-    const direccionCodificada = encodeURIComponent(direccion);
-  
-    const url = `http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${direccionCodificada}&geocodificar=true`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
-          const resultado = data.direccionesNormalizadas[0];
-          const lat = resultado.coordenadas.y;
-          const lng = resultado.coordenadas.x;
-          mostrarMapa1(lat, lng);
-        } else {
-          alert("No se encontraron resultados para la dirección.");
-        }
-      })
-      .catch(error => {
-        console.error("Error al normalizar la dirección:", error);
-      });
-}
-  
-function mostrarMapa1(lat, lng) {
-  const mapa = L.map('mapa').setView([lat, lng], 15);
+function mostrarMapa(direccion, id, lat, lng) {
+  const mapa = L.map('mapa' + id).setView([lat, lng], 15);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(mapa);
 
   L.marker([lat, lng]).addTo(mapa)
-    .bindPopup('Dirección: España 508, San Miguel')
+    .bindPopup('Dirección: ' + direccion)
     .openPopup();
 }
 
+function filtrarNoticias() {
+  fetch("noticias.json")
+    .then(response => response.json())
+    .then(noticias => {
+      let buscarPor = "";
+      let tipo = "";
+      let texto = "";
+      let filtradas = [];
 
+      buscarPor = document.getElementById("selectBuscarPor").value;
+      texto = document.getElementById("inputBuscar").value;
 
-/*Segunda Noticia*/ 
-function enviarPregunta2() {
-  alert("Pregunta enviada (simulada).");
-}
+      if (buscarPor === "titulo") {
+        filtradas = noticias.filter(n => n.titulo.toLocaleLowerCase().includes(texto.toLocaleLowerCase()));
+      } else {
+        filtradas = noticias.filter(n => n.descripcion.toLocaleLowerCase().includes(texto.toLocaleLowerCase()));
+      }
 
-function normalizarDireccion2() {
-    const direccion = 'Avenida Presidente Juan Domingo Perón 1602, San Miguel'; 
-  
-    const direccionCodificada = encodeURIComponent(direccion);
-  
-    const url = `http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${direccionCodificada}&geocodificar=true`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
-          const resultado = data.direccionesNormalizadas[0];
-          const lat = resultado.coordenadas.y;
-          const lng = resultado.coordenadas.x;
-          mostrarMapa2(lat, lng);
-        } else {
-          alert("No se encontraron resultados para la dirección.");
-        }
-      })
-      .catch(error => {
-        console.error("Error al normalizar la dirección:", error);
+      tipo = document.getElementById("selectTipo").value;
+      if (tipo !== "") {
+        filtradas = noticias.filter(n => n.tipo === tipo);
+      }
+
+      const div = document.getElementById("divNoticias");
+      div.innerHTML = "";
+
+      filtradas.forEach(n => {
+        const noticia = mostrarNoticia(n);
+        div.appendChild(noticia);
       });
-}
-  
-function mostrarMapa2(lat, lng) {
-  const mapa = L.map('mapa').setView([lat, lng], 15);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(mapa);
-
-  L.marker([lat, lng]).addTo(mapa)
-    .bindPopup('Dirección: Avenida Presidente Juan Domingo Perón 1602, San Miguel')
-    .openPopup();
+      document.getElementById("noticiasFiltradas").classList.remove('oculto');
+    })
+    .catch(error => console.error('Error al cargar JSON de noticias:', error));
 }
 
-/*Tercera Noticia */
-function enviarPregunta3() {
-  alert("Pregunta enviada (simulada).");
-}
-
-function normalizarDireccion3() {
-    const direccion = 'Pringles 1102, San Miguel'; 
-  
-    const direccionCodificada = encodeURIComponent(direccion);
-  
-    const url = `http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${direccionCodificada}&geocodificar=true`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
-          const resultado = data.direccionesNormalizadas[0];
-          const lat = resultado.coordenadas.y;
-          const lng = resultado.coordenadas.x;
-          mostrarMapa3(lat, lng);
-        } else {
-          alert("No se encontraron resultados para la dirección.");
-        }
-      })
-      .catch(error => {
-        console.error("Error al normalizar la dirección:", error);
-      });
-}
-  
-function mostrarMapa3(lat, lng) {
-  const mapa = L.map('mapa').setView([lat, lng], 15);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(mapa);
-
-  L.marker([lat, lng]).addTo(mapa)
-    .bindPopup('Dirección: Pringles 1102, San Miguel')
-    .openPopup();
-}
-
-/*Cuarta Noticia */
-
-function enviarPregunta4() {
-  alert("Pregunta enviada (simulada).");
-}
-
-function normalizarDireccion4() {
-    const direccion = 'Italia 900, San Miguel'; 
-  
-    const direccionCodificada = encodeURIComponent(direccion);
-  
-    const url = `http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${direccionCodificada}&geocodificar=true`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
-          const resultado = data.direccionesNormalizadas[0];
-          const lat = resultado.coordenadas.y;
-          const lng = resultado.coordenadas.x;
-          mostrarMapa4(lat, lng);
-        } else {
-          alert("No se encontraron resultados para la dirección.");
-        }
-      })
-      .catch(error => {
-        console.error("Error al normalizar la dirección:", error);
-      });
-}
-  
-function mostrarMapa4(lat, lng) {
-  const mapa = L.map('mapa').setView([lat, lng], 15);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(mapa);
-
-  L.marker([lat, lng]).addTo(mapa)
-    .bindPopup('Dirección: Italia 900, San Miguel')
-    .openPopup();
-}
-
-/*Quinta Noticia*/
-
-function enviarPregunta5() {
-  alert("Pregunta enviada (simulada).");
-}
-
-function normalizarDireccion5() {
-    const direccion = 'Pardo 1500, San Miguel'; 
-  
-    const direccionCodificada = encodeURIComponent(direccion);
-  
-    const url = `http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${direccionCodificada}&geocodificar=true`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
-          const resultado = data.direccionesNormalizadas[0];
-          const lat = resultado.coordenadas.y;
-          const lng = resultado.coordenadas.x;
-          mostrarMapa5(lat, lng);
-        } else {
-          alert("No se encontraron resultados para la dirección.");
-        }
-      })
-      .catch(error => {
-        console.error("Error al normalizar la dirección:", error);
-      });
-}
-  
-function mostrarMapa5(lat, lng) {
-  const mapa = L.map('mapa').setView([lat, lng], 15);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(mapa);
-
-  L.marker([lat, lng]).addTo(mapa)
-    .bindPopup('Dirección: Pardo 1500, San Miguel')
-    .openPopup();
-}
-
-/*Sexta Noticia*/
-
-function enviarPregunta6() {
-  alert("Pregunta enviada (simulada).");
-}
-
-function normalizarDireccion6() {
-    const direccion = 'Zuviría 2100, San Miguel'; 
-  
-    const direccionCodificada = encodeURIComponent(direccion);
-  
-    const url = `http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${direccionCodificada}&geocodificar=true`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
-          const resultado = data.direccionesNormalizadas[0];
-          const lat = resultado.coordenadas.y;
-          const lng = resultado.coordenadas.x;
-          mostrarMapa6(lat, lng);
-        } else {
-          alert("No se encontraron resultados para la dirección.");
-        }
-      })
-      .catch(error => {
-        console.error("Error al normalizar la dirección:", error);
-      });
-}
-  
-function mostrarMapa6(lat, lng) {
-  const mapa = L.map('mapa').setView([lat, lng], 15);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(mapa);
-
-  L.marker([lat, lng]).addTo(mapa)
-    .bindPopup('Dirección: Zuviría 2100, San Miguel')
-    .openPopup();
-}
-
-/*Septima Noticia */
-
-function enviarPregunta7() {
-  alert("Pregunta enviada (simulada).");
-}
-
-function normalizarDireccion7() {
-    const direccion = 'Avenida Doctor Ricardo Balbín 2300, San Miguel'; 
-  
-    const direccionCodificada = encodeURIComponent(direccion);
-  
-    const url = `http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${direccionCodificada}&geocodificar=true`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
-          const resultado = data.direccionesNormalizadas[0];
-          const lat = resultado.coordenadas.y;
-          const lng = resultado.coordenadas.x;
-          mostrarMapa7(lat, lng);
-        } else {
-          alert("No se encontraron resultados para la dirección.");
-        }
-      })
-      .catch(error => {
-        console.error("Error al normalizar la dirección:", error);
-      });
-}
-  
-function mostrarMapa7(lat, lng) {
-  const mapa = L.map('mapa').setView([lat, lng], 15);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(mapa);
-
-  L.marker([lat, lng]).addTo(mapa)
-    .bindPopup('Dirección: Avenida Doctor Ricardo Balbín 2300, San Miguel')
-    .openPopup();
-}
-
-/*Octava Noticia */
-
-function enviarPregunta8() {
-  alert("Pregunta enviada (simulada).");
-}
-
-function normalizarDireccion8() {
-    const direccion = 'Blasco Ibañes 2700, San Miguel'; 
-  
-    const direccionCodificada = encodeURIComponent(direccion);
-  
-    const url = `http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${direccionCodificada}&geocodificar=true`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
-          const resultado = data.direccionesNormalizadas[0];
-          const lat = resultado.coordenadas.y;
-          const lng = resultado.coordenadas.x;
-          mostrarMapa8(lat, lng);
-        } else {
-          alert("No se encontraron resultados para la dirección.");
-        }
-      })
-      .catch(error => {
-        console.error("Error al normalizar la dirección:", error);
-      });
-}
-  
-function mostrarMapa8(lat, lng) {
-  const mapa = L.map('mapa').setView([lat, lng], 15);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(mapa);
-
-  L.marker([lat, lng]).addTo(mapa)
-    .bindPopup('Dirección: Blasco Ibañes 2700, San Miguel')
-    .openPopup();
-}
-
-
-/*Novena Noticia */
-
-function enviarPregunta9() {
-  alert("Pregunta enviada (simulada).");
-}
-
-function normalizarDireccion9() {
-    const direccion = 'Avenida Gaspar Campos 4700 , San Miguel'; 
-  
-    const direccionCodificada = encodeURIComponent(direccion);
-  
-    const url = `http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${direccionCodificada}&geocodificar=true`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
-          const resultado = data.direccionesNormalizadas[0];
-          const lat = resultado.coordenadas.y;
-          const lng = resultado.coordenadas.x;
-          mostrarMapa9(lat, lng);
-        } else {
-          alert("No se encontraron resultados para la dirección.");
-        }
-      })
-      .catch(error => {
-        console.error("Error al normalizar la dirección:", error);
-      });
-}
-  
-function mostrarMapa9(lat, lng) {
-  const mapa = L.map('mapa').setView([lat, lng], 15);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(mapa);
-
-  L.marker([lat, lng]).addTo(mapa)
-    .bindPopup('Dirección: Avenida Gaspar Campos 4700, San Miguel')
-    .openPopup();
-}
-
-/*Decima Noticia */
-
-function enviarPregunta10() {
-  alert("Pregunta enviada (simulada).");
-}
-
-function normalizarDireccion10() {
-    const direccion = 'Maestro Eduardo Ferreyra 2200, San Miguel'; 
-  
-    const direccionCodificada = encodeURIComponent(direccion);
-  
-    const url = `http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${direccionCodificada}&geocodificar=true`;
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
-          const resultado = data.direccionesNormalizadas[0];
-          const lat = resultado.coordenadas.y;
-          const lng = resultado.coordenadas.x;
-          mostrarMapa10(lat, lng);
-        } else {
-          alert("No se encontraron resultados para la dirección.");
-        }
-      })
-      .catch(error => {
-        console.error("Error al normalizar la dirección:", error);
-      });
-}
-  
-function mostrarMapa10(lat, lng) {
-  const mapa = L.map('mapa').setView([lat, lng], 15);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(mapa);
-
-  L.marker([lat, lng]).addTo(mapa)
-    .bindPopup('Dirección: Maestro Eduardo Ferreyra 2200, San Miguel')
-    .openPopup();
+function mostrarNoticia(noticia) {
+  let div = document.createElement("div");
+  let html = "<h3>" + noticia.titulo + "</h3> ";
+  html += "<p>" + noticia.descripcion + "</p>";
+  html += " <div> ";
+  html += "  <p><strong>Dirección: </strong> ";
+  html += noticia.direccion + "</p>";
+  html += " <button onclick=\"normalizarDireccion('" + noticia.direccion + "'," + noticia.id + ")\">Ver dirección en el mapa</button>";
+  html += " </div> ";
+  html += " <div id='mapa" + noticia.id + "' style='height: 300px; width: 100%;'></div>";
+  div.innerHTML = html;
+  return div;
 }
