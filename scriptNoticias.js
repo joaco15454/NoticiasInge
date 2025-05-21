@@ -123,3 +123,36 @@ function mostrarNoticia(noticia) {
   div.innerHTML = html;
   return div;
 }
+
+function previsualizarNoticia() {
+  // Tomar datos del formulario
+  const titulo = document.getElementById("tituloNoticia").value;
+  const descripcion = document.getElementById("descripcionNoticia").value;
+  const direccion = document.getElementById("direccionNoticia").value;
+  const tipo = document.getElementById("tipoNoticia").value;
+
+  // Crear un objeto noticia temporal
+  const noticiaTemp = {
+    id: 9999, // ID ficticio para evitar conflictos
+    titulo,
+    descripcion,
+    direccion: direccion.trim() === "" ? null : direccion,
+    pregunta1: "Ejemplo de pregunta de un vecino",
+    respuesta1: "Ejemplo de respuesta del administrador.",
+    pregunta2: "Otra consulta común.",
+    respuesta2: "Otra respuesta común.",
+    tipo
+  };
+
+  // Generar el HTML con la misma función que se usa para mostrar noticias
+  const divPreview = document.getElementById("previsualizacion");
+  divPreview.innerHTML = "";
+  const noticiaHTML = mostrarNoticia(noticiaTemp);
+  divPreview.appendChild(noticiaHTML);
+  divPreview.style.display = "block";
+
+  // Si la dirección es válida, intentar normalizar y mostrar mapa
+  if (noticiaTemp.direccion) {
+    normalizarDireccion(noticiaTemp.direccion, noticiaTemp.id);
+  }
+}
