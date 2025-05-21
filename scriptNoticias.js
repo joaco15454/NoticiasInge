@@ -5,23 +5,50 @@ function normalizarDireccion(direccion, id) {
   fetch(url)
     .then(response => response.json())
     .then(data => {
-      if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
-        const resultado = data.direccionesNormalizadas[0];
-        const lat = resultado.coordenadas.y;
-        const lng = resultado.coordenadas.x;
+      const sugerenciasDiv = document.getElementById("sugerenciasDireccion");
+      sugerenciasDiv.innerHTML = ""; // Limpiar sugerencias anteriores
+      const mapaDiv = document.getElementById("mapaDireccion");
+      if (id === 73) mapaDiv.innerHTML = ""; // Siempre limpiar mapa en creación
 
-        if (id === 69) {
-          // Crear noticia
-          document.getElementById("mensajeDireccion").innerText = "✅ Dirección válida y geolocalizada correctamente.";
-          mostrarMapaCrear(lat, lng);
+      const mensaje = document.getElementById("mensajeDireccion");
+
+      if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
+        const resultados = data.direccionesNormalizadas;
+
+        // Si hay más de una sugerencia, mostramos pero NO creamos mapa
+        if (id === 73 && resultados.length > 1) {
+          let html = "<p><strong>¿Quisiste decir alguna de estas direcciones?</strong></p><ul>";
+          resultados.forEach(dir => {
+            html += `<li>${dir.direccion}</li>`;
+          });
+          html += "</ul>";
+          sugerenciasDiv.innerHTML = html;
+          mensaje.innerText = "⚠️ Se encontraron múltiples coincidencias. Por favor, especificá mejor la dirección.";
+          return; // Evita continuar
+        }
+
+        // Mostrar mapa solo si hay UNA coincidencia y tiene coordenadas
+        const primerResultado = resultados[0];
+        if (primerResultado.coordenadas) {
+          const lat = primerResultado.coordenadas.y;
+          const lng = primerResultado.coordenadas.x;
+
+          if (id === 73) {
+            const mapaDiv = document.getElementById("mapaDireccion");
+            mapaDiv.innerHTML = ""; // Siempre limpiar mapa en creación
+            mensaje.innerText = "✅ Dirección encontrada y geolocalizada.";
+            mostrarMapaCrear(lat, lng);
+          } else {
+            mostrarMapa(direccion, id, lat, lng);
+          }
         } else {
-          // Noticias existentes
-          mostrarMapa(direccion, id, lat, lng);
+          if (id === 73) {
+            mensaje.innerText = "⚠️ Dirección válida pero sin coordenadas. No se puede mostrar el mapa.";
+          }
         }
       } else {
-        if (id === 0) {
-          document.getElementById("mensajeDireccion").innerText = "❌ No se pudo normalizar la dirección. Intenta con otra.";
-          document.getElementById("mapaDireccion").innerHTML = "";
+        if (id === 73) {
+          mensaje.innerText = "❌ No se pudo encontrar la dirección. Intenta ser más específico.";
         } else {
           alert("No se encontraron resultados para la dirección.");
         }
@@ -29,26 +56,34 @@ function normalizarDireccion(direccion, id) {
     })
     .catch(error => {
       console.error("Error al normalizar la dirección:", error);
-      if (id === 69) {
-        document.getElementById("mensajeDireccion").innerText = "⚠️ Error al conectar con el servicio de geolocalización.";
+      if (id === 73) {
+        document.getElementById("mensajeDireccion").innerText = "⚠️ Error al conectar con el servicio de normalización.";
         document.getElementById("mapaDireccion").innerHTML = "";
       }
     });
 }
 
+let mapaCrearInstance = null; // Variable global para controlar el mapa de creación
+
 function mostrarMapaCrear(lat, lng) {
-  // Limpia el contenedor por si ya se había creado un mapa antes
-  document.getElementById("mapaDireccion").innerHTML = "";
-  const mapa = L.map('mapaDireccion').setView([lat, lng], 15);
+  // Si ya existe una instancia previa del mapa, destruirla
+  if (mapaCrearInstance) {
+    mapaCrearInstance.remove();
+    mapaCrearInstance = null;
+  }
+
+  // Crear una nueva instancia
+  mapaCrearInstance = L.map('mapaDireccion').setView([lat, lng], 15);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(mapa);
+  }).addTo(mapaCrearInstance);
 
-  L.marker([lat, lng]).addTo(mapa)
+  L.marker([lat, lng]).addTo(mapaCrearInstance)
     .bindPopup('Ubicación encontrada')
     .openPopup();
 }
+
 
 function mostrarMapa(direccion, id, lat, lng) {
   const mapa = L.map('mapa' + id).setView([lat, lng], 15);
