@@ -43,21 +43,22 @@ function filtrarNoticias() {
 
       buscarPor = document.getElementById("selectBuscarPor").value;
       texto = document.getElementById("inputBuscar").value;
-
+      /*Nos fijamos si se busca por titulo o contenido*/ 
       if (buscarPor === "titulo") {
         filtradas = noticias.filter(n => n.titulo.toLocaleLowerCase().includes(texto.toLocaleLowerCase()));
       } else {
         filtradas = noticias.filter(n => n.descripcion.toLocaleLowerCase().includes(texto.toLocaleLowerCase()));
       }
-
+      /*Nos fijamos que tipo de noticia se busca */
       tipo = document.getElementById("selectTipo").value;
       if (tipo !== "") {
         filtradas = noticias.filter(n => n.tipo === tipo);
       }
-
+      /*Se hace para mostrar en pantalla la noticia y limpiarla para otra busqueda */
       const div = document.getElementById("divNoticias");
       div.innerHTML = "";
 
+      /*Recorremos las noticias filtradas en un ciclo par mostrarlas en pantalla */
       filtradas.forEach(n => {
         const noticia = mostrarNoticia(n);
         div.appendChild(noticia);
@@ -68,6 +69,7 @@ function filtrarNoticias() {
 }
 
 function mostrarNoticia(noticia) {
+  /*Usamos html en js directamente */
   let div = document.createElement("div");
   let html = "<h3>" + noticia.titulo + "</h3> ";
   html += "<p>" + noticia.descripcion + "</p>";
@@ -80,8 +82,10 @@ function mostrarNoticia(noticia) {
   html += "<div class='preguntas'>";
   html += "<h4> Preguntas y respuestas </h4>";
   html += "<div class='pregunta'>";
-  html += "<p><strong>Vecino 1:</strong>" + noticia.pregunta + "</p>";
-  html += "<p><strong>Admin:</strong>" + noticia.respuesta + "</p>";
+  html += "<p><strong>Vecino 1:</strong>" + noticia.pregunta1 + "</p>";
+  html += "<p><strong>Admin:</strong>" + noticia.respuesta1 + "</p>";
+  html += "<p><strong>Vecino 2:</strong>" + noticia.pregunta2 + "</p>";
+  html += "<p><strong>Admin:</strong>" + noticia.respuesta2 + "</p>";
   div.innerHTML = html;
   return div;
 }
