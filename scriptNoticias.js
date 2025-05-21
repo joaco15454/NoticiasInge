@@ -1,6 +1,5 @@
 function normalizarDireccion(direccion, id) {
   const direccionCodificada = encodeURIComponent(direccion);
-
   const url = `http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${direccionCodificada}&geocodificar=true`;
 
   fetch(url)
@@ -10,14 +9,45 @@ function normalizarDireccion(direccion, id) {
         const resultado = data.direccionesNormalizadas[0];
         const lat = resultado.coordenadas.y;
         const lng = resultado.coordenadas.x;
-        mostrarMapa(direccion, id, lat, lng);
+
+        if (id === 69) {
+          // Crear noticia
+          document.getElementById("mensajeDireccion").innerText = "✅ Dirección válida y geolocalizada correctamente.";
+          mostrarMapaCrear(lat, lng);
+        } else {
+          // Noticias existentes
+          mostrarMapa(direccion, id, lat, lng);
+        }
       } else {
-        alert("No se encontraron resultados para la dirección.");
+        if (id === 0) {
+          document.getElementById("mensajeDireccion").innerText = "❌ No se pudo normalizar la dirección. Intenta con otra.";
+          document.getElementById("mapaDireccion").innerHTML = "";
+        } else {
+          alert("No se encontraron resultados para la dirección.");
+        }
       }
     })
     .catch(error => {
       console.error("Error al normalizar la dirección:", error);
+      if (id === 69) {
+        document.getElementById("mensajeDireccion").innerText = "⚠️ Error al conectar con el servicio de geolocalización.";
+        document.getElementById("mapaDireccion").innerHTML = "";
+      }
     });
+}
+
+function mostrarMapaCrear(lat, lng) {
+  // Limpia el contenedor por si ya se había creado un mapa antes
+  document.getElementById("mapaDireccion").innerHTML = "";
+  const mapa = L.map('mapaDireccion').setView([lat, lng], 15);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(mapa);
+
+  L.marker([lat, lng]).addTo(mapa)
+    .bindPopup('Ubicación encontrada')
+    .openPopup();
 }
 
 function mostrarMapa(direccion, id, lat, lng) {
@@ -73,19 +103,23 @@ function mostrarNoticia(noticia) {
   let div = document.createElement("div");
   let html = "<h3>" + noticia.titulo + "</h3> ";
   html += "<p>" + noticia.descripcion + "</p>";
-  html += " <div> ";
-  html += "  <p><strong>Dirección: </strong> ";
-  html += noticia.direccion + "</p>";
-  html += " <button onclick=\"normalizarDireccion('" + noticia.direccion + "'," + noticia.id + ")\">Ver dirección en el mapa</button>";
-  html += " </div> ";
-  html += " <div id='mapa" + noticia.id + "' style='height: 300px; width: 100%;'></div>";
+  if (noticia.direccion !== null && noticia.direccion.trim() !== "") {
+    html += "<div>";
+    html += "<p><strong>Dirección:</strong> " + noticia.direccion + "</p>";
+    html += "<button onclick=\"normalizarDireccion('" + noticia.direccion + "'," + noticia.id + ")\">Ver dirección en el mapa</button>";
+    html += "</div>";
+    html += "<div id='mapa" + noticia.id + "' style='height: 300px; width: 100%; margin-top: 10px;'></div>";
+  }
+
   html += "<div class='preguntas'>";
-  html += "<h4> Preguntas y respuestas </h4>";
+  html += "<h4>Preguntas y respuestas</h4>";
   html += "<div class='pregunta'>";
-  html += "<p><strong>Vecino 1:</strong>" + noticia.pregunta1 + "</p>";
-  html += "<p><strong>Admin:</strong>" + noticia.respuesta1 + "</p>";
-  html += "<p><strong>Vecino 2:</strong>" + noticia.pregunta2 + "</p>";
-  html += "<p><strong>Admin:</strong>" + noticia.respuesta2 + "</p>";
+  html += "<p><strong>Vecino 1:</strong> " + noticia.pregunta1 + "</p>";
+  html += "<p><strong>Admin:</strong> " + noticia.respuesta1 + "</p>";
+  html += "<p><strong>Vecino 2:</strong> " + noticia.pregunta2 + "</p>";
+  html += "<p><strong>Admin:</strong> " + noticia.respuesta2 + "</p>";
+  html += "</div></div>";
+
   div.innerHTML = html;
   return div;
 }
