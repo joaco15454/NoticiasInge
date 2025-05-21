@@ -6,7 +6,9 @@
     "tipo": "obras publicas",
     "direccion": "Las Heras 1234, San Miguel",
     "lat": -34.603722,
-    "lng": -58.381592
+    "lng": -58.381592,
+    "pregunta": "¿Cuánto tiempo durará la obra?",
+    "respuesta": "La obra se completará en aproximadamente 2 meses."
   },
   {
     "id": 2,
@@ -15,7 +17,9 @@
     "tipo": "obras publicas",
     "direccion": null,
     "lat": null,
-    "lng": null
+    "lng": null,
+    "pregunta": "¿Habra camaras de seguridad en la plaza?",
+    "respuesta": "Si, esta equipada con camaras en diferentes puntos de la plaza."
   },
   {
     "id": 3,
@@ -24,7 +28,9 @@
     "tipo": "obras publicas",
     "direccion": "Av. Rivadavia 345, Buenos Aires",
     "lat": -34.610438,
-    "lng": -58.388574
+    "lng": -58.388574,
+    "pregunta": "¿Cuando se podria sacar turnos?",
+    "respuesta": "Se podra sacar turnos una ves que la obra se complete."
   },
   {
     "id": 4,
@@ -33,7 +39,9 @@
     "tipo": "campañas municipales",
     "direccion": "Av. Ricardo Balvín 555, Buenos Aires",
     "lat": -34.610438,
-    "lng": -58.388574
+    "lng": -58.388574,
+    "pregunta": "¿En que horario empiezan a atender?",
+    "respuesta": "A partir de las 8 de la mañana."
   },
   {
     "id": 5,
@@ -42,6 +50,8 @@
     "tipo": "festivales",
     "direccion": null,
     "lat": null,
-    "lng": null
+    "lng": null,
+    "pregunta": "¿A que hora empiezan el festival?",
+    "respuesta": "A partir de las 10 de la mañana."
   }
 ]

@@ -77,6 +77,11 @@ function mostrarNoticia(noticia) {
   html += " <button onclick=\"normalizarDireccion('" + noticia.direccion + "'," + noticia.id + ")\">Ver dirección en el mapa</button>";
   html += " </div> ";
   html += " <div id='mapa" + noticia.id + "' style='height: 300px; width: 100%;'></div>";
+  html += "<div class='preguntas'>";
+  html += "<h4> Preguntas y respuestas </h4>";
+  html += "<div class='pregunta'>";
+  html += "<p><strong>Vecino 1:</strong>" + noticia.pregunta + "</p>";
+  html += "<p><strong>Admin:</strong>" + noticia.respuesta + "</p>";
   div.innerHTML = html;
   return div;
 }
