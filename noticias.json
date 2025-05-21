@@ -1,42 +1,67 @@
 [
   {
+    "id": 1,
     "titulo": "Inicia la repavimentación de la calle Las Heras",
     "descripcion": "El municipio ha comenzado con los trabajos de repavimentación de la calle Las Heras, mejorando la transitabilidad y seguridad vial del barrio.",
     "tipo": "obras publicas",
     "direccion": "Las Heras 1234, San Miguel",
     "lat": -34.603722,
-    "lng": -58.381592
+    "lng": -58.381592,
+    "pregunta1": "¿Cuánto tiempo durará la obra?",
+    "respuesta1": "La obra se completará en aproximadamente 2 meses.",
+    "pregunta2": "¿Qué calles estarán afectadas?",
+    "respuesta2": "Las calles principales del barrio Norte.</"
   },
   {
+    "id": 2,
     "titulo": "Nueva plaza en el barrio Calabaza",
     "descripcion": "Se inaugurará una plaza con juegos inclusivos y áreas verdes.",
     "tipo": "obras publicas",
     "direccion": null,
     "lat": null,
-    "lng": null
+    "lng": null,
+    "pregunta1": "¿Habra camaras de seguridad en la plaza?",
+    "respuesta1": "Si, esta equipada con camaras en diferentes puntos de la plaza.",
+    "pregunta2": "¿Habra fuentes o grifos para beber?",
+    "respuesta2": "Si, se planeo que haya una por esquina."
   },
   {
+    "id": 3,
     "titulo": "Ampliación del Hospital Central",
     "descripcion": "El hospital sumará 30 camas y un nuevo centro de diagnóstico.",
     "tipo": "obras publicas",
     "direccion": "Av. Rivadavia 345, Buenos Aires",
     "lat": -34.610438,
-    "lng": -58.388574
+    "lng": -58.388574,
+    "pregunta1": "¿Cuando se podria sacar turnos?",
+    "respuesta1": "Se podra sacar turnos una ves que la obra se complete.",
+    "pregunta2": "¿Se atenderan niños?",
+    "respuesta2": "Si, personas menores de edad podran ser atendidas."
   },
   {
+    "id": 4,
     "titulo": "Campaña de vacunación en el barrio Calabaza",
     "descripcion": "El municipio realizará una campaña de vacunación gratuita para los vecinos de San Miguel.",
     "tipo": "campañas municipales",
     "direccion": "Av. Ricardo Balvín 555, Buenos Aires",
     "lat": -34.610438,
-    "lng": -58.388574
+    "lng": -58.388574,
+    "pregunta1": "¿En que horario empiezan a atender?",
+    "respuesta1": "A partir de las 8 de la mañana.",
+    "pregunta2": "¿Tiene disponible la vacuna de HPV de los 16?",
+    "respuesta2": "Si esta disponible."
   },
   {
+    "id": 5,
     "titulo": "Festival de folclore en barrio Mitre",
     "descripcion": "Se realizará un festival de folclore con música en vivo por el 50º aniversario del barrio Mitre.",
     "tipo": "festivales",
     "direccion": null,
     "lat": null,
-    "lng": null
+    "lng": null,
+    "pregunta1": "¿A que hora empiezan el festival?",
+    "respuesta1": "A partir de las 10 de la mañana.",
+    "pregunta2": "¿Podriamos llevar mesas y sillas para pasar el dia?",
+    "respuesta2": "Si, habra lugares disponibles para esas actividades."
   }
 ]

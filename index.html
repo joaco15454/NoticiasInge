@@ -1,147 +1,56 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Noticias Municipales</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  </head>
-  <body>
-    <nav id="navbar" class="oculto">
-      <button onclick="mostrarSeccion('noticias')">Noticias</button>
-      <button onclick="mostrarSeccion('boletines')">Boletines</button>
-      <button onclick="mostrarSeccion('revista')">Revista Mensual</button>
-      <button id="btn-crear-noticia" onclick="mostrarSeccion('crear')">
-        Crear Noticia
-      </button>
-      <button onclick="volverInicio()">Cerrar sesión</button>
-    </nav>
 
-    <!-- Pantalla de inicio -->
-    <section id="inicio" class="pantalla">
-      <h1>Bienvenido al Portal de Noticias</h1>
-      <button onclick="mostrarSeccion('login')">Iniciar sesión</button>
-      <button onclick="mostrarSeccion('registro')">Registrarse</button>
-      <button onclick="entrarComoInvitado()">Entrar como invitado</button>
-    </section>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noticias Municipales</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
 
-    <!-- Noticias -->
-    <section id="noticias" class="pantalla oculto">
-      <h2>Noticias Municipales</h2>
+<body>
+  <nav id="navbar" class="oculto">
+    <button onclick="mostrarSeccion('noticias')">Noticias</button>
+    <button onclick="mostrarSeccion('boletines')">Boletines</button>
+    <button onclick="mostrarSeccion('revista')">Revista Mensual</button>
+    <button id="btn-crear-noticia" onclick="mostrarSeccion('crear')">
+      Crear Noticia
+    </button>
+    <button onclick="volverInicio()">Cerrar sesión</button>
+  </nav>
 
-      <!-- Buscador y filtro -->
-      <div id="filtros-noticias" style="margin-bottom: 20px">
-        <label>
-          Buscar por:
-          <select id="selectBuscarPor" onchange="actualizarPlaceholder()">
-            <option value="titulo">Título</option>
-            <option value="descripcion">Contenido</option>
-          </select>
-        </label>
-        <input
-          type="text"
-          id="inputBuscar"
-          placeholder="Buscar por título..."
-          oninput="filtrarNoticias()"
-          style="margin-left: 10px"
-        />
+  <!-- Pantalla de inicio -->
+  <section id="inicio" class="pantalla">
+    <h1>Bienvenido al Portal de Noticias</h1>
+    <button onclick="mostrarSeccion('login')">Iniciar sesión</button>
+    <button onclick="mostrarSeccion('registro')">Registrarse</button>
+    <button onclick="entrarComoInvitado()">Entrar como invitado</button>
 
-        <label style="margin-left: 20px">
-          Filtrar por tipo:
-          <select id="selectTipo" onchange="filtrarNoticias()">
-            <option value="">-- Todos --</option>
-            <option value="obras publicas">Obras Públicas</option>
-            <option value="campañas municipales">Campañas Municipales</option>
-            <option value="cultura">Cultura</option>
-            <option value="festivales">Festivales</option>
-            <option value="acontecimientos vecinales">
-              Acontecimientos Vecinales
-            </option>
-          </select>
-        </label>
-      </div>
 
-      <div id="noticias-container">
-        <!-- Noticias se cargan aquí -->
-      </div>
-    </section>
 
-    <!-- Login -->
-    <section id="login" class="pantalla oculto">
-      <h2>Iniciar Sesión</h2>
-      <form onsubmit="login(event)">
-        <select required>
-          <option value="" disabled selected>Tipo de usuario</option>
-          <option value="vecino">Vecino</option>
-          <option value="admin">Administrador</option>
+  </section>
+
+  <!-- Noticias -->
+  <section id="noticias" class="pantalla oculto">
+    <h2>Noticias Municipales</h2>
+
+    <!-- Buscador y filtro -->
+    <div id="filtros-noticias" style="margin-bottom: 20px">
+      <label>
+        Buscar por:
+        <select id="selectBuscarPor" onchange="actualizarPlaceholder()">
+          <option value="titulo">Título</option>
+          <option value="descripcion">Contenido</option>
         </select>
-        <input type="email" placeholder="Correo electrónico" required />
-        <input type="password" placeholder="Contraseña" required />
-        <button type="submit">Ingresar</button>
-      </form>
-      <button onclick="volverInicio()">Volver</button>
-    </section>
+      </label>
+      <input type="text" id="inputBuscar" placeholder="Buscar por título..." style="margin-left: 10px" />
 
-    <!-- Registro -->
-    <section id="registro" class="pantalla oculto">
-      <h2>Registro de Vecino</h2>
-      <form onsubmit="registrarse(event)">
-        <input type="text" placeholder="Nombre completo" required />
-        <input type="text" placeholder="DNI" required />
-        <input type="email" placeholder="Correo electrónico" required />
-        <input type="password" placeholder="Contraseña" required />
-        <label>
-          <input type="checkbox" required />
-          Acepto recibir novedades (newsletter)
-        </label>
-        <button type="submit">Registrarse</button>
-      </form>
-      <button onclick="volverInicio()">Volver</button>
-    </section>
-
-    <!-- Boletines -->
-    <section id="boletines" class="pantalla oculto">
-      <h2>Boletines Semanales</h2>
-      <p>Lista de boletines enviados, pendientes o con error.</p>
-      <ul>
-        <li>Boletín #12 - Semana 18 - Estado: Enviado</li>
-        <li>Boletín #13 - Semana 19 - Estado: Pendiente</li>
-      </ul>
-    </section>
-
-    <!-- Revista -->
-    <section id="revista" class="pantalla oculto">
-      <h2>Revista Mensual</h2>
-      <p>Envío mensual de noticias al sistema externo PrintAllTheThings.</p>
-      <p>Última exportación: 01/05/2025</p>
-    </section>
-
-    <!-- Crear Noticia -->
-    <section id="crear" class="pantalla oculto">
-      <h2>Crear Noticia</h2>
-      <form id="formCrearNoticia" onsubmit="crearNoticia(event)">
-        <input
-          type="text"
-          id="tituloNoticia"
-          placeholder="Título de la noticia"
-          required
-        />
-        <textarea
-          id="descripcionNoticia"
-          placeholder="Descripción de la noticia"
-          required
-        ></textarea>
-        <input
-          type="text"
-          id="direccionNoticia"
-          placeholder="Dirección"
-          required
-        />
-        <label for="tipoNoticia">Tipo de noticia:</label>
-        <select id="tipoNoticia" required>
-          <option value="" disabled selected>Seleccione tipo</option>
+      <label style="margin-left: 20px">
+        Filtrar por tipo:
+        <select id="selectTipo">
+          <option value="">-- Todos --</option>
           <option value="obras publicas">Obras Públicas</option>
           <option value="campañas municipales">Campañas Municipales</option>
           <option value="cultura">Cultura</option>
@@ -150,30 +59,111 @@
             Acontecimientos Vecinales
           </option>
         </select>
-        <br /><br />
-        <button type="submit">Crear Noticia</button>
-        <button
-          type="button"
-          id="btn-previsualizar"
-          onclick="previsualizarNoticia()"
-        >
-          Previsualizar
-        </button>
-      </form>
+      </label>
+      <button onclick="filtrarNoticias()">Buscar</button>
+    </div>
 
-      <div
-        id="previsualizacion"
-        style="
+    <div id="noticias-container">
+
+
+      <!-- Noticias -->
+      <section id="noticiasFiltradas" class="pantalla oculto">
+        <h2>Noticias Municipales</h2>
+        <div id="divNoticias"></div>
+      </section>
+
+    </div>
+  </section>
+
+  <!-- Login -->
+  <section id="login" class="pantalla oculto">
+    <h2>Iniciar Sesión</h2>
+    <form onsubmit="login(event)">
+      <select required>
+        <option value="" disabled selected>Tipo de usuario</option>
+        <option value="vecino">Vecino</option>
+        <option value="admin">Administrador</option>
+      </select>
+      <input type="email" placeholder="Correo electrónico" required />
+      <input type="password" placeholder="Contraseña" required />
+      <button type="submit">Ingresar</button>
+    </form>
+    <button onclick="volverInicio()">Volver</button>
+  </section>
+
+  <!-- Registro -->
+  <section id="registro" class="pantalla oculto">
+    <h2>Registro de Vecino</h2>
+    <form onsubmit="registrarse(event)">
+      <input type="text" placeholder="Nombre completo" required />
+      <input type="text" placeholder="DNI" required />
+      <input type="email" placeholder="Correo electrónico" required />
+      <input type="password" placeholder="Contraseña" required />
+      <label>
+        <input type="checkbox" required />
+        Acepto recibir novedades (newsletter)
+      </label>
+      <button type="submit">Registrarse</button>
+    </form>
+    <button onclick="volverInicio()">Volver</button>
+  </section>
+
+  
+  <!-- Boletines -->
+  <section id="boletines" class="pantalla oculto">
+    <h2>Boletines Semanales</h2>
+    <p>Lista de boletines enviados, pendientes o con error.</p>
+    <ul>
+      <li>Boletín #12 - Semana 18 - Estado: Enviado</li>
+      <li>Boletín #13 - Semana 19 - Estado: Pendiente</li>
+    </ul>
+  </section>
+
+  <!-- Revista -->
+  <section id="revista" class="pantalla oculto">
+    <h2>Revista Mensual</h2>
+    <p>Envío mensual de noticias al sistema externo PrintAllTheThings.</p>
+    <p>Última exportación: 01/05/2025</p>
+  </section>
+
+  <!-- Crear Noticia -->
+  <section id="crear" class="pantalla oculto">
+    <h2>Crear Noticia</h2>
+    <form id="formCrearNoticia" onsubmit="crearNoticia(event)">
+      <input type="text" id="tituloNoticia" placeholder="Título de la noticia" required />
+      <textarea id="descripcionNoticia" placeholder="Descripción de la noticia" required></textarea>
+      <input type="text" id="direccionNoticia" placeholder="Dirección" required />
+      <label for="tipoNoticia">Tipo de noticia:</label>
+      <select id="tipoNoticia" required>
+        <option value="" disabled selected>Seleccione tipo</option>
+        <option value="obras publicas">Obras Públicas</option>
+        <option value="campañas municipales">Campañas Municipales</option>
+        <option value="cultura">Cultura</option>
+        <option value="festivales">Festivales</option>
+        <option value="acontecimientos vecinales">
+          Acontecimientos Vecinales
+        </option>
+      </select>
+      <br /><br />
+      <button type="submit">Crear Noticia</button>
+      <button type="button" id="btn-previsualizar" onclick="previsualizarNoticia()">
+        Previsualizar
+      </button>
+    </form>
+
+    <div id="previsualizacion" style="
           border: 1px solid #ccc;
           padding: 10px;
           margin-top: 10px;
           display: none;
-        "
-      ></div>
+        "></div>
 
-      <button onclick="volverInicio()">Volver</button>
-    </section>
+    <button onclick="volverInicio()">Volver</button>
+  </section>
 
-    <script src="script.js"></script>
-  </body>
+  <script src="script.js"></script>
+  <script src="scriptNoticias.js"></script>
+
+</body>
+
 </html>
