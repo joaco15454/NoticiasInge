@@ -3,31 +3,34 @@ function normalizarDireccion(direccion, id) {
   const url = `http://servicios.usig.buenosaires.gob.ar/normalizar/?direccion=${direccionCodificada}&geocodificar=true`;
 
   fetch(url)
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       const sugerenciasDiv = document.getElementById("sugerenciasDireccion");
-      sugerenciasDiv.innerHTML = ""; // Limpiar sugerencias anteriores
+      sugerenciasDiv.innerHTML = "";
       const mapaDiv = document.getElementById("mapaDireccion");
-      if (id === 73) mapaDiv.innerHTML = ""; // Siempre limpiar mapa en creación
+      if (id === 73) mapaDiv.innerHTML = "";
 
       const mensaje = document.getElementById("mensajeDireccion");
 
-      if (data.direccionesNormalizadas && data.direccionesNormalizadas.length > 0) {
+      if (
+        data.direccionesNormalizadas &&
+        data.direccionesNormalizadas.length > 0
+      ) {
         const resultados = data.direccionesNormalizadas;
 
-        // Si hay más de una sugerencia, mostramos pero NO creamos mapa
         if (id === 73 && resultados.length > 1) {
-          let html = "<p><strong>¿Quisiste decir alguna de estas direcciones?</strong></p><ul>";
-          resultados.forEach(dir => {
+          let html =
+            "<p><strong>¿Quisiste decir alguna de estas direcciones?</strong></p><ul>";
+          resultados.forEach((dir) => {
             html += `<li>${dir.direccion}</li>`;
           });
           html += "</ul>";
           sugerenciasDiv.innerHTML = html;
-          mensaje.innerText = "⚠️ Se encontraron múltiples coincidencias. Por favor, especificá mejor la dirección.";
-          return; // Evita continuar
+          mensaje.innerText =
+            "⚠️ Se encontraron múltiples coincidencias. Por favor, especificá mejor la dirección.";
+          return;
         }
 
-        // Mostrar mapa solo si hay UNA coincidencia y tiene coordenadas
         const primerResultado = resultados[0];
         if (primerResultado.coordenadas) {
           const lat = primerResultado.coordenadas.y;
@@ -35,7 +38,7 @@ function normalizarDireccion(direccion, id) {
 
           if (id === 73) {
             const mapaDiv = document.getElementById("mapaDireccion");
-            mapaDiv.innerHTML = ""; // Siempre limpiar mapa en creación
+            mapaDiv.innerHTML = "";
             mensaje.innerText = "✅ Dirección encontrada y geolocalizada.";
             mostrarMapaCrear(lat, lng);
           } else {
@@ -43,64 +46,67 @@ function normalizarDireccion(direccion, id) {
           }
         } else {
           if (id === 73) {
-            mensaje.innerText = "⚠️ Dirección válida pero sin coordenadas. No se puede mostrar el mapa.";
+            mensaje.innerText =
+              "⚠️ Dirección válida pero sin coordenadas. No se puede mostrar el mapa.";
           }
         }
       } else {
         if (id === 73) {
-          mensaje.innerText = "❌ No se pudo encontrar la dirección. Intenta ser más específico.";
+          mensaje.innerText =
+            "❌ No se pudo encontrar la dirección. Intenta ser más específico.";
         } else {
           alert("No se encontraron resultados para la dirección.");
         }
       }
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("Error al normalizar la dirección:", error);
       if (id === 73) {
-        document.getElementById("mensajeDireccion").innerText = "⚠️ Error al conectar con el servicio de normalización.";
+        document.getElementById("mensajeDireccion").innerText =
+          "⚠️ Error al conectar con el servicio de normalización.";
         document.getElementById("mapaDireccion").innerHTML = "";
       }
     });
 }
 
-let mapaCrearInstance = null; // Variable global para controlar el mapa de creación
+let mapaCrearInstance = null;
 
 function mostrarMapaCrear(lat, lng) {
-  // Si ya existe una instancia previa del mapa, destruirla
   if (mapaCrearInstance) {
     mapaCrearInstance.remove();
     mapaCrearInstance = null;
   }
 
-  // Crear una nueva instancia
-  mapaCrearInstance = L.map('mapaDireccion').setView([lat, lng], 15);
+  mapaCrearInstance = L.map("mapaDireccion").setView([lat, lng], 15);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors",
   }).addTo(mapaCrearInstance);
 
-  L.marker([lat, lng]).addTo(mapaCrearInstance)
-    .bindPopup('Ubicación encontrada')
+  L.marker([lat, lng])
+    .addTo(mapaCrearInstance)
+    .bindPopup("Ubicación encontrada")
     .openPopup();
 }
 
-
 function mostrarMapa(direccion, id, lat, lng) {
-  const mapa = L.map('mapa' + id).setView([lat, lng], 15);
+  const mapa = L.map("mapa" + id).setView([lat, lng], 15);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(mapa);
 
-  L.marker([lat, lng]).addTo(mapa)
-    .bindPopup('Dirección: ' + direccion)
+  L.marker([lat, lng])
+    .addTo(mapa)
+    .bindPopup("Dirección: " + direccion)
     .openPopup();
 }
 
 function filtrarNoticias() {
   fetch("noticias.json")
-    .then(response => response.json())
-    .then(noticias => {
+    .then((response) => response.json())
+    .then((noticias) => {
       let buscarPor = "";
       let tipo = "";
       let texto = "";
@@ -108,42 +114,51 @@ function filtrarNoticias() {
 
       buscarPor = document.getElementById("selectBuscarPor").value;
       texto = document.getElementById("inputBuscar").value;
-      /*Nos fijamos si se busca por titulo o contenido*/ 
       if (buscarPor === "titulo") {
-        filtradas = noticias.filter(n => n.titulo.toLocaleLowerCase().includes(texto.toLocaleLowerCase()));
+        filtradas = noticias.filter((n) =>
+          n.titulo.toLocaleLowerCase().includes(texto.toLocaleLowerCase())
+        );
       } else {
-        filtradas = noticias.filter(n => n.descripcion.toLocaleLowerCase().includes(texto.toLocaleLowerCase()));
+        filtradas = noticias.filter((n) =>
+          n.descripcion.toLocaleLowerCase().includes(texto.toLocaleLowerCase())
+        );
       }
-      /*Nos fijamos que tipo de noticia se busca */
       tipo = document.getElementById("selectTipo").value;
       if (tipo !== "") {
-        filtradas = noticias.filter(n => n.tipo === tipo);
+        filtradas = noticias.filter((n) => n.tipo === tipo);
       }
-      /*Se hace para mostrar en pantalla la noticia y limpiarla para otra busqueda */
       const div = document.getElementById("divNoticias");
       div.innerHTML = "";
 
-      /*Recorremos las noticias filtradas en un ciclo par mostrarlas en pantalla */
-      filtradas.forEach(n => {
+      filtradas.forEach((n) => {
         const noticia = mostrarNoticia(n);
         div.appendChild(noticia);
       });
-      document.getElementById("noticiasFiltradas").classList.remove('oculto');
+      document.getElementById("noticiasFiltradas").classList.remove("oculto");
     })
-    .catch(error => console.error('Error al cargar JSON de noticias:', error));
+    .catch((error) =>
+      console.error("Error al cargar JSON de noticias:", error)
+    );
 }
 
 function mostrarNoticia(noticia) {
-  /*Usamos html en js directamente */
   let div = document.createElement("div");
   let html = "<h3>" + noticia.titulo + "</h3> ";
   html += "<p>" + noticia.descripcion + "</p>";
   if (noticia.direccion !== null && noticia.direccion.trim() !== "") {
     html += "<div>";
     html += "<p><strong>Dirección:</strong> " + noticia.direccion + "</p>";
-    html += "<button onclick=\"normalizarDireccion('" + noticia.direccion + "'," + noticia.id + ")\">Ver dirección en el mapa</button>";
+    html +=
+      "<button onclick=\"normalizarDireccion('" +
+      noticia.direccion +
+      "'," +
+      noticia.id +
+      ')">Ver dirección en el mapa</button>';
     html += "</div>";
-    html += "<div id='mapa" + noticia.id + "' style='height: 300px; width: 100%; margin-top: 10px;'></div>";
+    html +=
+      "<div id='mapa" +
+      noticia.id +
+      "' style='height: 300px; width: 100%; margin-top: 10px;'></div>";
   }
 
   html += "<div class='preguntas'>";
@@ -160,15 +175,13 @@ function mostrarNoticia(noticia) {
 }
 
 function previsualizarNoticia() {
-  // Tomar datos del formulario
   const titulo = document.getElementById("tituloNoticia").value;
   const descripcion = document.getElementById("descripcionNoticia").value;
   const direccion = document.getElementById("direccionNoticia").value;
   const tipo = document.getElementById("tipoNoticia").value;
 
-  // Crear un objeto noticia temporal
   const noticiaTemp = {
-    id: 9999, // ID ficticio para evitar conflictos
+    id: 9999,
     titulo,
     descripcion,
     direccion: direccion.trim() === "" ? null : direccion,
@@ -176,17 +189,15 @@ function previsualizarNoticia() {
     respuesta1: "Ejemplo de respuesta del administrador.",
     pregunta2: "Otra consulta común.",
     respuesta2: "Otra respuesta común.",
-    tipo
+    tipo,
   };
 
-  // Generar el HTML con la misma función que se usa para mostrar noticias
   const divPreview = document.getElementById("previsualizacion");
   divPreview.innerHTML = "";
   const noticiaHTML = mostrarNoticia(noticiaTemp);
   divPreview.appendChild(noticiaHTML);
   divPreview.style.display = "block";
 
-  // Si la dirección es válida, intentar normalizar y mostrar mapa
   if (noticiaTemp.direccion) {
     normalizarDireccion(noticiaTemp.direccion, noticiaTemp.id);
   }
